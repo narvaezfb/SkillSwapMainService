@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SkillSwapMainService.Migrations
 {
     [DbContext(typeof(SkillSwapDbContext))]
-    partial class SkillSwapDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231121212040_NewTable")]
+    partial class NewTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,25 +90,7 @@ namespace SkillSwapMainService.Migrations
 
                     b.HasKey("UserSkillID");
 
-                    b.HasIndex("SkillID");
-
                     b.ToTable("UserSkill");
-                });
-
-            modelBuilder.Entity("SkillSwapMainService.Models.UserSkill", b =>
-                {
-                    b.HasOne("SkillSwapMainService.Models.Skill", "Skill")
-                        .WithMany("UserSkills")
-                        .HasForeignKey("SkillID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Skill");
-                });
-
-            modelBuilder.Entity("SkillSwapMainService.Models.Skill", b =>
-                {
-                    b.Navigation("UserSkills");
                 });
 #pragma warning restore 612, 618
         }

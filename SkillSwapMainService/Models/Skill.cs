@@ -26,7 +26,7 @@ namespace SkillSwapMainService.Models
 
         public Boolean IsVerified { get; set; }
 
-       
+        public ICollection<UserSkill>? UserSkills { get; set; }
 
     }
 }
