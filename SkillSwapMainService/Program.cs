@@ -1,6 +1,9 @@
 ﻿using JsonPatchSample;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SkillSwapMainService.Interfaces;
+using SkillSwapMainService.Middleware;
+using SkillSwapMainService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +52,9 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddSwaggerGen();
 
+// Register TokenValidationService
+builder.Services.AddHttpClient<ITokenValidationService, TokenValidationService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -61,6 +67,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// Use the TokenValidationMiddleware
+app.UseMiddleware<TokenValidationMiddleware>();
 
 app.MapControllers();
 
