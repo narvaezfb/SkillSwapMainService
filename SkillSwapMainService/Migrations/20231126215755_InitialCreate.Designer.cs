@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SkillSwapMainService.Migrations
 {
     [DbContext(typeof(SkillSwapDbContext))]
-    [Migration("20231121212040_NewTable")]
-    partial class NewTable
+    [Migration("20231126215755_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,8 +28,9 @@ namespace SkillSwapMainService.Migrations
                 {
                     b.Property<int>("SkillID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValueSql("10000");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SkillID"));
 
                     b.Property<string>("Category")
                         .IsRequired()
@@ -90,7 +91,25 @@ namespace SkillSwapMainService.Migrations
 
                     b.HasKey("UserSkillID");
 
+                    b.HasIndex("SkillID");
+
                     b.ToTable("UserSkill");
+                });
+
+            modelBuilder.Entity("SkillSwapMainService.Models.UserSkill", b =>
+                {
+                    b.HasOne("SkillSwapMainService.Models.Skill", "Skill")
+                        .WithMany("UserSkills")
+                        .HasForeignKey("SkillID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Skill");
+                });
+
+            modelBuilder.Entity("SkillSwapMainService.Models.Skill", b =>
+                {
+                    b.Navigation("UserSkills");
                 });
 #pragma warning restore 612, 618
         }

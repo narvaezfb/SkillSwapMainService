@@ -23,19 +23,27 @@ namespace SkillSwapMainService.Controllers
         [HttpPost("CreateSkill", Name ="CreateSkill")]
         public async Task<ActionResult> CreateSkill([FromBody] CreateSkillRequest createSkillRequest)
         {
-            if(!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                //Map request to entity
+                Skill skill = _skillMapper.MapToSkillEntity(createSkillRequest);
+
+                // Add new skill and save it to DB async
+                _context.Skill.Add(skill);
+                await _context.SaveChangesAsync();
+
+                return Ok(skill);
             }
-
-            //Map request to entity
-            Skill skill = _skillMapper.MapToSkillEntity(createSkillRequest);
-
-            // Add new skill and save it to DB async
-            _context.Skill.Add(skill);
-            await _context.SaveChangesAsync();
-
-            return Ok(skill);
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+            
         }
 
         [HttpGet("GetSkill/{SkillID}", Name ="GetSkill")]
