@@ -22,7 +22,7 @@ namespace SkillSwapMainService.Middleware
             {
                 // Extract the token from the Authorization header
                 string? authorizationHeader = context.Request.Headers["Authorization"];
-                string? token = authorizationHeader?.Replace("Bearer ", ""); // Remove "Bearer " prefix if present
+                string? token = authorizationHeader?.Replace("Bearer ", "");
 
                 if (string.IsNullOrEmpty(token))
                 {

@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SkillSwapMainService.Interfaces;
 
 namespace SkillSwapMainService.Services
@@ -21,14 +23,28 @@ namespace SkillSwapMainService.Services
 
             HttpResponseMessage response = await _httpClient.PostAsync($"Auth/validateToken", body);
 
+
             if (response.IsSuccessStatusCode)
             {
-                // Token validation successful
-                return true;
+                string responseContent = await response.Content.ReadAsStringAsync();
+
+                JObject responseData = JObject.Parse(responseContent);
+
+                bool isValidToken = (bool) responseData["isValidToken"];
+
+                if (isValidToken)
+                {
+                    // Token validation successful
+                    return true;
+                }
+                return false;  
             }
             else if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                // Token validation failed (token is invalid or expired)
+                return false;
+            }
+            else if(response.StatusCode == HttpStatusCode.BadRequest)
+            {              
                 return false;
             }
             else

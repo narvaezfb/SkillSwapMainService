@@ -35,6 +35,7 @@
     <None Remove="Interfaces\" />
     <None Remove="Services\" />
     <None Remove="Middleware\" />
+    <None Remove="Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -46,5 +47,6 @@
     <Folder Include="Interfaces\" />
     <Folder Include="Services\" />
     <Folder Include="Middleware\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>

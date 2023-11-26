@@ -25,8 +25,9 @@ namespace SkillSwapMainService.Migrations
                 {
                     b.Property<int>("SkillID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValueSql("10000");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SkillID"));
 
                     b.Property<string>("Category")
                         .IsRequired()
