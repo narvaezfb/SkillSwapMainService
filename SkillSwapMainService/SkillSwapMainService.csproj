@@ -32,6 +32,9 @@
     <None Remove="Data\" />
     <None Remove="Models\Mappers\" />
     <None Remove="Models\ModelConfigurations\JSON Config\" />
+    <None Remove="Interfaces\" />
+    <None Remove="Services\" />
+    <None Remove="Middleware\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -40,5 +43,8 @@
     <Folder Include="Data\" />
     <Folder Include="Models\Mappers\" />
     <Folder Include="Models\ModelConfigurations\JSON Config\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Services\" />
+    <Folder Include="Middleware\" />
   </ItemGroup>
 </Project>
