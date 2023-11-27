@@ -26,7 +26,6 @@ public class SkillConfiguration: IEntityTypeConfiguration<Skill>
 
         builder.Property(s => s.DateAdded).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-       
     }
 }
 

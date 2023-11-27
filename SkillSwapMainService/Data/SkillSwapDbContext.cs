@@ -17,6 +17,7 @@ public class SkillSwapDbContext: DbContext
         modelBuilder.ApplyConfiguration(new UserSkillConfiguration());
         // Other configurations
     }
+
 }
 
 
