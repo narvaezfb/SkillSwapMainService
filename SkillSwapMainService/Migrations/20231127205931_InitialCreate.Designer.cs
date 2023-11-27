@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SkillSwapMainService.Migrations
 {
     [DbContext(typeof(SkillSwapDbContext))]
-    [Migration("20231126215755_InitialCreate")]
+    [Migration("20231127205931_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

@@ -23,6 +23,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.13" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +37,8 @@
     <None Remove="Services\" />
     <None Remove="Middleware\" />
     <None Remove="Migrations\" />
+    <None Remove="Models\RequestModels\Skills\" />
+    <None Remove="Models\RequestModels\UserSkills\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -48,5 +51,7 @@
     <Folder Include="Services\" />
     <Folder Include="Middleware\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Models\RequestModels\Skills\" />
+    <Folder Include="Models\RequestModels\UserSkills\" />
   </ItemGroup>
 </Project>

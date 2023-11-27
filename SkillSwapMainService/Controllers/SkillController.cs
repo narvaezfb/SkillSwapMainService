@@ -3,6 +3,7 @@ using SkillSwapMainService.Models;
 using SkillSwapMainService.Models.RequestModels;
 using SkillSwapMainService.Models.Mappers;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore;
 
 namespace SkillSwapMainService.Controllers
 {
@@ -30,96 +31,130 @@ namespace SkillSwapMainService.Controllers
                     return BadRequest(ModelState);
                 }
 
-                //Map request to entity
                 Skill skill = _skillMapper.MapToSkillEntity(createSkillRequest);
 
-                // Add new skill and save it to DB async
                 _context.Skill.Add(skill);
                 await _context.SaveChangesAsync();
 
                 return Ok(skill);
             }
+            catch (DbUpdateException dbUpdateException)
+            {
+                return BadRequest("Database error occurred: " + dbUpdateException.InnerException?.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "An error occurred while processing the request: " + e.Message);
+            }
+            
+        }
+
+        [HttpGet("GetSkill/{skillID}", Name ="GetSkill")]
+        public async Task<ActionResult> GetSkill(int skillID)
+        {
+            try
+            {
+                var skill = await _context.Skill.FindAsync(skillID);
+
+                if (skill == null)
+                {
+                    return BadRequest("Skill not found with that ID");
+                }
+
+                return Ok(skill);
+            }
             catch(Exception e)
             {
-                return BadRequest(e.Message);
+                return StatusCode(500, "An error occurred while processing the request: " + e.Message);
             }
-            
+           
         }
 
-        [HttpGet("GetSkill/{SkillID}", Name ="GetSkill")]
-        public async Task<ActionResult> GetSkill(int SkillID)
+        [HttpPatch("UpdateSkill/{skillID}", Name = "UpdateSkill")]
+        public async Task<ActionResult> UpdateSkill(int skillID, [FromBody] JsonPatchDocument<SkillUpdateRequest> patchDocument)
         {
-            var skill = await _context.Skill.FindAsync(SkillID);
-
-            if (skill == null)
+            try
             {
-                return BadRequest("Skill not found with that ID");
-            }
+                if (patchDocument == null)
+                {
+                    return BadRequest("Not model included in payload");
+                }
 
-            return Ok(skill);
+                var skill = await _context.Skill.FindAsync(skillID);
+
+                if (skill == null)
+                {
+                    return BadRequest("Not skill found with that ID");
+                }
+
+                var skillToPatch = new SkillUpdateRequest
+                {
+                    Name = skill.Name,
+                    Description = skill.Description,
+                    Category = skill.Category,
+                    Level = skill.Level,
+                    IsVerified = skill.IsVerified
+                };
+
+                patchDocument.ApplyTo(skillToPatch, ModelState);
+
+
+                if (!TryValidateModel(skillToPatch))
+                {
+                    return BadRequest(ModelState);
+                }
+
+
+                // Update attributes in the skill entity
+                skill.Name = skillToPatch.Name;
+                skill.Description = skillToPatch.Description;
+                skill.Category = skillToPatch.Category;
+                skill.Level = skillToPatch.Level;
+                skill.LastModified = DateTime.UtcNow;
+                skill.IsVerified = skillToPatch.IsVerified;
+
+
+                await _context.SaveChangesAsync();
+
+                return Ok(skill);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                return BadRequest("Database error occurred: " + dbUpdateException.InnerException?.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "An error occurred while processing the request: " + e.Message);
+            }
+          
         }
 
-        [HttpPatch("UpdateSkill/{SkillID}", Name = "UpdateSkill")]
-        public async Task<ActionResult> UpdateSkill(int SkillID, [FromBody] JsonPatchDocument<SkillUpdateRequest> patchDocument)
-        {
-            if (patchDocument == null)
-            {
-                return BadRequest("Not model included in payload");
-            }
-
-            var skill = await _context.Skill.FindAsync(SkillID);
-
-            if (skill == null )
-            {
-                return BadRequest("Not skill found with that ID");
-            }
-
-            var skillToPatch = new SkillUpdateRequest
-            {
-                Name = skill.Name,
-                Description = skill.Description,
-                Category = skill.Category,
-                Level = skill.Level,
-                IsVerified = skill.IsVerified
-            };
-
-            patchDocument.ApplyTo(skillToPatch, ModelState);
-
-            
-            if (!TryValidateModel(skillToPatch))
-            {
-                return BadRequest(ModelState);
-            }
-
-
-            // Update attributes in the skill entity
-            skill.Name = skillToPatch.Name;
-            skill.Description = skillToPatch.Description;
-            skill.Category = skillToPatch.Category;
-            skill.Level = skillToPatch.Level;
-            skill.LastModified = DateTime.UtcNow;
-            skill.IsVerified = skillToPatch.IsVerified;
-            
-
-            await _context.SaveChangesAsync();
-
-            return Ok(skill);
-        }
-
-        [HttpDelete("DeleteSkill/{SkillID}", Name = "DeleteSkill")]
+        [HttpDelete("DeleteSkill/{skillID}", Name = "DeleteSkill")]
         public async Task<ActionResult> DeleteSkill(int skillID)
         {
-            var skill = await _context.Skill.FindAsync(skillID);
-
-            if(skill == null)
+            try
             {
-                return BadRequest("Skill not found with that ID");
+                var skill = await _context.Skill.FindAsync(skillID);
+
+                if (skill == null)
+                {
+                    return BadRequest("Skill not found with that ID");
+                }
+
+                _context.Skill.Remove(skill);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+
             }
-
-            _context.Skill.Remove(skill);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (DbUpdateException dbUpdateException)
+            {
+                return BadRequest("Database error occurred: " + dbUpdateException.InnerException?.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "An error occurred while processing the request: " + e.Message);
+            }
         }
     }
 }

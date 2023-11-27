@@ -1,33 +1,34 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
 namespace SkillSwapMainService.Models
 {
-	public class Skill
-	{
+    public class Skill
+    {
         public int SkillID { get; set; }
 
         [Required(ErrorMessage = "Skill name is required")]
-        public required string Name { get; set; }
+        public string Name { get; set; }
 
         [Required(ErrorMessage = "Skill description is required")]
-        public required string Description { get; set; }
+        public string Description { get; set; }
 
         [Required(ErrorMessage = "Skill category is required")]
-        public required string Category { get; set; }
+        public string Category { get; set; }
 
         [Required(ErrorMessage = "Skill level is required")]
-        public required string Level { get; set; }
+        public string Level { get; set; }
 
         [Required(ErrorMessage = "Skill Owner ID is required")]
-        public required int OwnerID { get; set; }
+        public int OwnerID { get; set; }
 
         public DateTime DateAdded { get; set; }
-
         public DateTime LastModified { get; set; }
+        public bool IsVerified { get; set; }
 
-        public Boolean IsVerified { get; set; }
-
-        public ICollection<UserSkill>? UserSkills { get; set; }
-
+        [JsonIgnore]
+        public ICollection<UserSkill> UserSkills { get; set; }
     }
 }
-
