@@ -10,7 +10,7 @@ namespace SkillSwapMainService.Models.Mappers
 			{
 				Name = createSkillRequest.Name,
 				Description = createSkillRequest.Description,
-				Category = createSkillRequest.Category,
+				CategoryID = createSkillRequest.CategoryID,
 				Level = createSkillRequest.Level,
 				OwnerID = createSkillRequest.OwnerID
 			};

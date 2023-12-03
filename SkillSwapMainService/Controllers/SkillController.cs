@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace SkillSwapMainService.Controllers
 {
     [ApiController]
-    [Route("[Controller]")]
+    [Route("Admin/[Controller]")]
     public class SkillController: ControllerBase
 	{
         private readonly SkillSwapDbContext _context;
@@ -33,7 +33,7 @@ namespace SkillSwapMainService.Controllers
 
                 Skill skill = _skillMapper.MapToSkillEntity(createSkillRequest);
 
-                _context.Skill.Add(skill);
+                _context.Skills.Add(skill);
                 await _context.SaveChangesAsync();
 
                 return Ok(skill);
@@ -54,7 +54,7 @@ namespace SkillSwapMainService.Controllers
         {
             try
             {
-                var skill = await _context.Skill.FindAsync(skillID);
+                var skill = await _context.Skills.FindAsync(skillID);
 
                 if (skill == null)
                 {
@@ -80,7 +80,7 @@ namespace SkillSwapMainService.Controllers
                     return BadRequest("Not model included in payload");
                 }
 
-                var skill = await _context.Skill.FindAsync(skillID);
+                var skill = await _context.Skills.FindAsync(skillID);
 
                 if (skill == null)
                 {
@@ -91,7 +91,7 @@ namespace SkillSwapMainService.Controllers
                 {
                     Name = skill.Name,
                     Description = skill.Description,
-                    Category = skill.Category,
+                    CategoryID = skill.CategoryID,
                     Level = skill.Level,
                     IsVerified = skill.IsVerified
                 };
@@ -108,7 +108,7 @@ namespace SkillSwapMainService.Controllers
                 // Update attributes in the skill entity
                 skill.Name = skillToPatch.Name;
                 skill.Description = skillToPatch.Description;
-                skill.Category = skillToPatch.Category;
+                skill.CategoryID = skillToPatch.CategoryID;
                 skill.Level = skillToPatch.Level;
                 skill.LastModified = DateTime.UtcNow;
                 skill.IsVerified = skillToPatch.IsVerified;
@@ -134,14 +134,14 @@ namespace SkillSwapMainService.Controllers
         {
             try
             {
-                var skill = await _context.Skill.FindAsync(skillID);
+                var skill = await _context.Skills.FindAsync(skillID);
 
                 if (skill == null)
                 {
                     return BadRequest("Skill not found with that ID");
                 }
 
-                _context.Skill.Remove(skill);
+                _context.Skills.Remove(skill);
                 await _context.SaveChangesAsync();
 
                 return NoContent();

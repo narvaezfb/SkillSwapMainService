@@ -10,7 +10,7 @@ namespace SkillSwapMainService.Models.RequestModels
 
         public  string? Description { get; set; }
 
-        public  string? Category { get; set; }
+        public  int CategoryID { get; set; }
 
         public  string? Level { get; set; }
 

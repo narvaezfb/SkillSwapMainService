@@ -38,7 +38,8 @@
     <None Remove="Middleware\" />
     <None Remove="Migrations\" />
     <None Remove="Models\RequestModels\Skills\" />
-    <None Remove="Models\RequestModels\UserSkills\" />
+    <None Remove="Models\RequestModels\Category\" />
+    <None Remove="Models\RequestModels\Listings\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -52,6 +53,7 @@
     <Folder Include="Middleware\" />
     <Folder Include="Migrations\" />
     <Folder Include="Models\RequestModels\Skills\" />
-    <Folder Include="Models\RequestModels\UserSkills\" />
+    <Folder Include="Models\RequestModels\Category\" />
+    <Folder Include="Models\RequestModels\Listings\" />
   </ItemGroup>
 </Project>

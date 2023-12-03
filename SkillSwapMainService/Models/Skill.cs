@@ -15,8 +15,8 @@ namespace SkillSwapMainService.Models
         [Required(ErrorMessage = "Skill description is required")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "Skill category is required")]
-        public string Category { get; set; }
+        [Required(ErrorMessage = "Skill category ID is required")]
+        public int CategoryID { get; set; }
 
         [Required(ErrorMessage = "Skill level is required")]
         public string Level { get; set; }
@@ -25,10 +25,21 @@ namespace SkillSwapMainService.Models
         public int OwnerID { get; set; }
 
         public DateTime DateAdded { get; set; }
+
         public DateTime LastModified { get; set; }
+
         public bool IsVerified { get; set; }
 
         [JsonIgnore]
-        public ICollection<UserSkill> UserSkills { get; set; }
+        public ICollection<Listing> Listings { get; set; }
+
+        public Category Category { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Transaction> OfferedSkill { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Transaction> ReceivedSkill { get; set; }
+
     }
 }
