@@ -9,18 +9,18 @@ using System;
 namespace SkillSwapMainService.Controllers
 {
     [ApiController]
-    [Route("[Controller]")]
-    public class UserSkillController : ControllerBase
+    [Route("User/[Controller]")]
+    public class ListingController : ControllerBase
 	{
         private readonly SkillSwapDbContext _context;
 
-        public UserSkillController(SkillSwapDbContext context)
+        public ListingController(SkillSwapDbContext context)
 		{
             _context = context;
         }
 
-        [HttpPost("CreateUserSkill", Name = "CreateUserSkill")]
-        public async Task<ActionResult> CreateUserSkill([FromBody] CreateUserSkillRequest createUserSkillRequest)
+        [HttpPost("CreateListing", Name = "CreateListing")]
+        public async Task<ActionResult> CreateListing([FromBody] CreateLisitingRequest createLisitingRequest)
         {
             try
             {
@@ -29,16 +29,19 @@ namespace SkillSwapMainService.Controllers
                     return BadRequest("Invalid Request Data");
                 }
 
-                UserSkill userSkill = new UserSkill
+                Listing listing = new Listing
                 {
-                    UserID = createUserSkillRequest.UserId,
-                    SkillID = createUserSkillRequest.SkillId
+                    UserID = createLisitingRequest.UserId,
+                    SkillID = createLisitingRequest.SkillId,
+                    Description = createLisitingRequest.Description,
+                    Location = createLisitingRequest.Location,
+                    Availability = createLisitingRequest.Availability
                 };
 
-                _context.UserSkill.Add(userSkill);
+                _context.Listings.Add(listing);
                 await _context.SaveChangesAsync();
 
-                return Ok(userSkill);
+                return Ok(listing);
             }
             catch (DbUpdateException dbUpdateException)
             {
@@ -50,25 +53,25 @@ namespace SkillSwapMainService.Controllers
             }
 
         }
-        [HttpGet("GetUserSkill/{userSkillId}", Name = "GetUserSkill")]
-        public async Task<ActionResult> GetUserSkill(int userSkillId)
+        [HttpGet("GetListing/{listingId}", Name = "GetListing")]
+        public async Task<ActionResult> GetListing(int listingId)
         {
             try
             {
-                var userSkill = await _context.UserSkill.FindAsync(userSkillId);
+                var listing = await _context.Listings.FindAsync(listingId);
 
-                if (userSkill == null)
+                if (listing == null)
                 {
-                    return BadRequest("No userSkill found with that ID");
+                    return BadRequest("No listing found with that ID");
                 }
 
-                var skill = await _context.Skill.FindAsync(userSkill.SkillID);
+                var skill = await _context.Skills.FindAsync(listing.SkillID);
 
                 if (skill != null)
                 {
-                    userSkill.Skill = skill;
+                    listing.Skill = skill;
                 }
-                return Ok(userSkill);
+                return Ok(listing);
             }
             catch (DbUpdateException dbUpdateException)
             {
@@ -79,22 +82,22 @@ namespace SkillSwapMainService.Controllers
                 return StatusCode(500, "An error occurred while processing the request: " + e.Message);
             }
         }
-        [HttpDelete("DeleteUserSkill/{userSkillId}", Name ="DeleteUserSkill")]
-        public async Task<ActionResult> DeleteUserSkill(int userSkillId)
+        [HttpDelete("DeleteListing/{listingId}", Name ="Delete Listing")]
+        public async Task<ActionResult> DeleteListing(int listingId)
         {
             try
             {
-                var userSkill = await _context.UserSkill.FindAsync(userSkillId);
+                var listing = await _context.Listings.FindAsync(listingId);
 
-                if(userSkill == null)
+                if(listing == null)
                 {
-                    return BadRequest("No userSkill found with that ID");
+                    return BadRequest("No listing found with that ID");
                 }
 
-                _context.UserSkill.Remove(userSkill);
+                _context.Listings.Remove(listing);
                 await _context.SaveChangesAsync();
 
-                return Ok("UserSkill has been deleted");
+                return Ok("Listing has been deleted");
             }
             catch (DbUpdateException dbUpdateException)
             {

@@ -7,6 +7,8 @@ using SkillSwapMainService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders(); 
+builder.Logging.AddConsole(); 
 // Add services to the container.
 // Configure DbContext 
 builder.Services.AddDbContext<SkillSwapDbContext>(options =>
@@ -52,7 +54,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddSwaggerGen();
 
-// Register TokenValidationService
+// Register TokenValidationServices
 builder.Services.AddHttpClient<ITokenValidationService, TokenValidationService>();
 
 var app = builder.Build();
@@ -68,7 +70,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-// Use the TokenValidationMiddleware
 app.UseMiddleware<TokenValidationMiddleware>();
 
 app.MapControllers();
