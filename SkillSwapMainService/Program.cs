@@ -7,8 +7,9 @@ using SkillSwapMainService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders(); 
-builder.Logging.AddConsole(); 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // Add services to the container.
 // Configure DbContext 
 builder.Services.AddDbContext<SkillSwapDbContext>(options =>
@@ -37,27 +38,36 @@ builder.Services.AddSwaggerGen(c =>
 
     // Include the JWT token in the Swagger UI
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
         {
+            new OpenApiSecurityScheme
             {
-                new OpenApiSecurityScheme
+                Reference = new OpenApiReference
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                new string[] {}
-            }
-        });
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
-
-builder.Services.AddSwaggerGen();
 
 // Register TokenValidationServices
 builder.Services.AddHttpClient<ITokenValidationService, TokenValidationService>();
+builder.Services.AddHttpClient<IAdminTokenValidationService, AdminTokenValidationService>();
 
 var app = builder.Build();
+
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/User"), appBuilder =>
+{
+    appBuilder.UseMiddleware<TokenValidationMiddleware>();
+});
+
+app.UseWhen(context => context.Request.Path.StartsWithSegments("/Admin"), appBuilder =>
+{
+    appBuilder.UseMiddleware<AdminTokenValidationMiddleware>();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -67,12 +77,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
 app.UseAuthorization();
 
-app.UseMiddleware<TokenValidationMiddleware>();
-
-app.MapControllers();
+app.MapControllers(); 
 
 app.Run();
-
